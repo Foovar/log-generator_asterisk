@@ -1,0 +1,32 @@
+{
+  "name": "asterisk-generator",
+  "version": "1.0.0",
+  "description": "generador de logs para asterisk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Foovar/log-generator_asterisk.git"
+  },
+  "keywords": [
+    "asterisk",
+    "log",
+    "crd",
+    "mysql"
+  ],
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Foovar/log-generator_asterisk/issues"
+  },
+  "homepage": "https://github.com/Foovar/log-generator_asterisk#readme",
+  "dependencies": {
+    "faker": "^4.1.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/faker": "^4.1.0"
+  }
+}
