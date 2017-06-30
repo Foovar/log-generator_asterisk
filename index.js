@@ -8,12 +8,12 @@
 "use strict";
 const faker = require("faker")
 const _ = require("lodash")
-const limit = 100 // cantidad de filas
+const limit = 10000 // cantidad de filas
 const users = Array(limit).fill(0).map((u, i) => ({ name: faker.name.firstName().toLowerCase(), id: i + 2000 }))
 
-let i = 0, src, _dst, dst, dcontext, clid, channel, dstchannel,
-  lastapp, lastdata, chc = i,
-  start, _date;
+let i = 0, src, _dst, dst, dcontext, clid, channel, dstchannel, disposition, answer, end,
+  lastapp, lastdata, chc = i, duration,
+  start, _date, billsec;
 
 for (; i < limit; i++ , chc++) {
   src = users[i].name;
@@ -26,13 +26,27 @@ for (; i < limit; i++ , chc++) {
   dstchannel = lastapp == "Dial" ? `SIP/${_dst.name}-${hex(++chc)}` : "";
   lastdata = lastapp != "Dial" ? "no-answer" : `SIP/${_dst.name}`
   //21/06/2017  04:28:37
-  _date = new Date((_date || new Date ).getTime() + _.random(30 * 1E3, 5 * 60 * 1E3))
+  _date = new Date((_date || new Date).getTime() + _.random(30 * 1E3, 5 * 60 * 1E3))
 
-  //start = faker.date.between("2017-06-01", "2017-07-01")
-
+  disposition = _.sample([...("ANSWERED,".repeat(10)).split(","), "NO ANSWER", "BUSY", "CONGESTION"].filter(e => !!e))
+  answer = disposition == "ANSWERED" ? new Date(_date.getTime() + _.random(2 * 1E3, 50 * 1E3)) : "";
+  end = !answer ? new Date(_date.getTime() + _.random(2 * 1E3, 30 * 1E3)) : new Date(_date.getTime() + _.random(10 * 1E3, 60 * 60 * 1E3))
   start = _date
+  billsec = !answer ? 0 : end - answer;
+  duration = (!answer ? end - start : billsec + (answer - start)) / 1E3;
+  billsec /= 1E3;
 
-  console.log([src, dst, dcontext, clid, channel, dstchannel, lastapp, lastdata, start.toLocaleString()].join(","))
+  console.log([src, dst, dcontext, clid,
+    channel, dstchannel, lastapp, lastdata,
+    start.toLocaleString(),
+    answer.toLocaleString(),
+    end.toLocaleString(),
+    Math.ceil(duration),
+    Math.ceil(billsec),
+    disposition,
+    "DOCUMENTATION",
+    Math.ceil(start.getTime() / 1E3) + "." + i
+  ].join(","))
 }
 
 function hex(a) {
