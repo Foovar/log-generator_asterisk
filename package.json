@@ -27,6 +27,7 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "@types/faker": "^4.1.0"
+    "@types/faker": "^4.1.0",
+    "@types/node": "^8.0.6"
   }
 }

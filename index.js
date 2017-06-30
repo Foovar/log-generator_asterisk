@@ -8,7 +8,9 @@
 "use strict";
 const faker = require("faker")
 const _ = require("lodash")
-const limit = 10000 // cantidad de filas
+const limit = 100000 // cantidad de filas
+//const fs = require("fs");
+
 const users = Array(limit).fill(0).map((u, i) => ({ name: faker.name.firstName().toLowerCase(), id: i + 2000 }))
 
 let i = 0, src, _dst, dst, dcontext, clid, channel, dstchannel, disposition, answer, end,
@@ -36,7 +38,7 @@ for (; i < limit; i++ , chc++) {
   duration = (!answer ? end - start : billsec + (answer - start)) / 1E3;
   billsec /= 1E3;
 
-  console.log([src, dst, dcontext, clid,
+  billsec >= 0 && duration > 0 && console.log([src, dst, dcontext, clid,
     channel, dstchannel, lastapp, lastdata,
     start.toLocaleString(),
     answer.toLocaleString(),
@@ -46,8 +48,9 @@ for (; i < limit; i++ , chc++) {
     disposition,
     "DOCUMENTATION",
     Math.ceil(start.getTime() / 1E3) + "." + i
-  ].join(","))
+  ].join(","));
 }
+
 
 function hex(a) {
   let h = a.toString(16)
