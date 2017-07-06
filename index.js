@@ -8,7 +8,7 @@
 "use strict";
 const faker = require("faker")
 const _ = require("lodash")
-const limit = 100000 // cantidad de filas
+const limit = 30000 // cantidad de filas
 //const fs = require("fs");
 
 const users = Array(limit).fill(0).map((u, i) => ({ name: faker.name.firstName().toLowerCase(), id: i + 2000 }))
@@ -20,6 +20,8 @@ let i = 0, src, _dst, dst, dcontext, clid, channel, dstchannel, disposition, ans
 for (; i < limit; i++ , chc++) {
   src = users[i].name;
   _dst = _.sample(users.filter(e => e.id != users[i].id))
+  _dst = (Math.random() * 50) <= 1 ? { name: "soporte", id: 123 } : _dst;
+
   dst = _dst.id
   dcontext = "from-internal"
   clid = src
@@ -30,7 +32,7 @@ for (; i < limit; i++ , chc++) {
   //21/06/2017  04:28:37
   _date = new Date((_date || new Date).getTime() + _.random(30 * 1E3, 5 * 60 * 1E3))
 
-  disposition = _.sample([...("ANSWERED,".repeat(10)).split(","), "NO ANSWER", "BUSY", "CONGESTION"].filter(e => !!e))
+  disposition = _.sample([...("ANSWERED,".repeat(10)).split(","), "NO ANSWER", "BUSY", "CONGESTION", "FAILED"].filter(e => !!e))
   answer = disposition == "ANSWERED" ? new Date(_date.getTime() + _.random(2 * 1E3, 50 * 1E3)) : "";
   end = !answer ? new Date(_date.getTime() + _.random(2 * 1E3, 30 * 1E3)) : new Date(_date.getTime() + _.random(10 * 1E3, 60 * 60 * 1E3))
   start = _date
