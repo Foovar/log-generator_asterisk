@@ -8,10 +8,10 @@
 "use strict";
 const faker = require("faker")
 const _ = require("lodash")
-const limit = 30000 // cantidad de filas
+const limit = 50000 // cantidad de filas
 //const fs = require("fs");
 
-const users = Array(limit).fill(0).map((u, i) => ({ name: faker.name.firstName().toLowerCase(), id: i + 2000 }))
+const users = Array(limit).fill(0).map((u, i) => ({ name: faker.name.firstName().toLowerCase(), id: i + 2000, ip: faker.internet.ip(), port: _.random(1024, 49151) }))
 
 let i = 0, src, _dst, dst, dcontext, clid, channel, dstchannel, disposition, answer, end,
   lastapp, lastdata, chc = i, duration,
@@ -32,7 +32,8 @@ for (; i < limit; i++ , chc++) {
   //21/06/2017  04:28:37
   _date = new Date((_date || new Date).getTime() + _.random(30 * 1E3, 5 * 60 * 1E3))
 
-  disposition = _.sample([...("ANSWERED,".repeat(10)).split(","), "NO ANSWER", "BUSY", "CONGESTION", "FAILED"].filter(e => !!e))
+  disposition = _.sample([...("ANSWERED,".repeat(15)).split(","), "NO ANSWER", "BUSY", "CONGESTION", "FAILED"].filter(e => !!e))
+  disposition = disposition == "CONGESTION" || disposition == "FAILED" ? _.random(5) == 1 ? disposition : _.sample(["ANSWERED", "NO ANSWER", "BUSY"]) : disposition
   answer = disposition == "ANSWERED" ? new Date(_date.getTime() + _.random(2 * 1E3, 50 * 1E3)) : "";
   end = !answer ? new Date(_date.getTime() + _.random(2 * 1E3, 30 * 1E3)) : new Date(_date.getTime() + _.random(10 * 1E3, 60 * 60 * 1E3))
   start = _date
@@ -49,7 +50,9 @@ for (; i < limit; i++ , chc++) {
     Math.ceil(billsec),
     disposition,
     "DOCUMENTATION",
-    Math.ceil(start.getTime() / 1E3) + "." + i
+    Math.ceil(start.getTime() / 1E3) + "." + i,
+    users[i].ip,
+    users[i].port
   ].join(","));
 }
 
@@ -58,5 +61,3 @@ function hex(a) {
   let h = a.toString(16)
   return "00000000".substr(h.length) + h;
 }
-
-
